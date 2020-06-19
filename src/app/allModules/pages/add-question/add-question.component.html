@@ -1,0 +1,230 @@
+<div id="chat" class="page-layout carded fullwidth">
+  <div class="center">
+    <div class="outer" fxLayout>
+      <div class="bg"></div>
+      <div>
+        <h3 style="margin: 0px;padding-left: 10px;"><b>Questionnaire</b></h3>
+      </div>
+      <!-- <div fxFlex align="end">
+        <span><img src="assets/images/logo.svg" style="height: 40px;padding: 4px 15px 2px 0px;"></span>
+      </div> -->
+    </div>
+    <div style="padding: 2%;">
+      <div style="border: 1px solid #e0e0e0;">
+        <div style="background-color: #fffdf9;">
+          <button type="button" mat-button><span style="margin-left: 10px;">Add Question</span></button>
+        </div>
+        <div>
+          <form autocomplete="off" name="form" class="normal" novalidate [formGroup]="questionFormGroup">
+            <div>
+              <div fxFlex fxLayout="row">
+                <div fxFlex="10" class="pr-8" style="padding-top: 25px !important;" fxLayoutAlign="end start">
+                  <span style="font-size: 13px;">Enter Question:</span>
+                </div>
+                <div fxFlex="80">
+                  <mat-form-field class="pl-8 pr-12" fxLayoutAlign="end start">
+                    <input matInput formControlName="Question">
+                    <!-- <mat-error
+                    *ngIf="questionnaireFormGroup.get('QRText').touched && questionnaireFormGroup.get('QRText').hasError('required')">
+                    Questionnaire is required
+                  </mat-error> -->
+                  </mat-form-field>
+                </div>
+                <div fxFlex="10">
+                  <button (click)="SaveQuestion()" style="margin-left: 10%;" class="SaveBtn" mat-button>Save</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div fxFlex fxLayout="row">
+                <div fxFlex="10" class="pt-8 pr-8" fxLayoutAlign="end start">
+                  <span style="font-size: 13px;">Question Type:</span>
+                </div>
+                <div fxFlex="80">
+                  <mat-radio-group fxLayout="row" style="margin-top: 5px;margin-left: 10px;"
+                    formControlName="QuestionType">
+                    <mat-radio-button class="mb-12" value="Text" (click)="GetQuestiontype('Text')">Text
+                    </mat-radio-button>
+                    <mat-radio-button class="mb-12" style="margin-left: 20px;" value="Radio"
+                      (change)="GetQuestiontype('Radio')">Radio</mat-radio-button>
+                    <mat-radio-button class="mb-12" style="margin-left: 20px;" value="DropDown"
+                      (change)="GetQuestiontype('DropDown')">DropDown
+                    </mat-radio-button>
+                    <mat-radio-button class="mb-12" style="margin-left: 20px;" value="CheckBox"
+                      (change)="GetQuestiontype('CheckBox')">CheckBox
+                    </mat-radio-button>
+                    <mat-radio-button class="mb-12" style="margin-left: 20px;" value="Email"
+                      (change)="GetQuestiontype('Email')">Email</mat-radio-button>
+                    <mat-radio-button class="mb-12" style="margin-left: 20px;" value="Date"
+                      (change)="GetQuestiontype('Date')">Date</mat-radio-button>
+                    <mat-radio-button class="mb-12" style="margin-left: 20px;" value="Number"
+                      (change)="GetQuestiontype('Number')">Number</mat-radio-button>
+                  </mat-radio-group>
+                  <!-- <mat-error
+                  *ngIf="questionnaireGroupFormGroup.get('DefaultExpanded').touched && questionnaireGroupFormGroup.get('DefaultExpanded').hasError('required')">
+                  Default Expanded is required</mat-error> -->
+                </div>
+              </div>
+            </div>
+          </form>
+          <div
+            *ngIf="selectQuestionType === 'Radio' || selectQuestionType === 'DropDown' || selectQuestionType === 'CheckBox'">
+            <div fxFlex fxLayout="row">
+              <div fxFlex="10" class="pr-8" style="padding-top: 25px !important;" fxLayoutAlign="end start">
+                <span style="font-size: 13px;">Enter Options:</span>
+              </div>
+              <div fxFlex="80">
+                <mat-form-field class="pl-8 pr-12" fxLayoutAlign="end start">
+                  <input matInput #txtVal (keydown.enter)="OptionEnter(txtVal.value)">
+                </mat-form-field>
+                <div>
+                  <button class="OptionButton" *ngFor="let options of QuestionOptions"><span
+                      class="Option">{{options}}</span>
+                    <mat-icon style="margin-top: -10px;" (click)="RemoveOption(options)">cancel</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 2%;">
+      <div style="border: 1px solid #e0e0e0;">
+        <div style="background-color: #fffdf9;height: 40px;">
+          <button type="button" mat-button style="background-color: #fffdf9;"><span style="margin-left: 10px;">Map
+              Questions</span></button>
+        </div>
+        <div>
+          <div fxFlex fxLayout="row">
+            <div fxFlex="15" class="pr-8" style="padding-top: 25px !important;" fxLayoutAlign="end start">
+              <span style="font-size: 13px;">Select Questionnaire:</span>
+            </div>
+            <div fxFlex="85">
+              <mat-form-field class="pl-8 pr-12" style="width: 100%;">
+                <mat-select>
+                  <mat-option *ngFor="let Question of AllQuestionnaire" [value]="Question.QRID"
+                    (click)="SelectQuestionnaire(Question.QRID)">
+                    {{Question.QRText}}
+                  </mat-option>
+                </mat-select>
+                <!-- <mat-error
+                  *ngIf="userMainFormGroup.get('Questionnaire').touched && userMainFormGroup.get('Questionnaire').hasError('required')">
+                  Questionnaire is required</mat-error> -->
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="margin-top: -27px !important;padding:32px 0px 1px !important;">
+            <div fxLayout class="content-card1">
+              <div fxFlex="30" class="side-bar">
+                <div class="sidenav-header">
+                  <mat-toolbar>
+                    <mat-toolbar-row fxLayout="row" class="px-8" fxLayoutAlign="space-between center">
+                      <div class="search-wrapper" fxFlex fxLayout="row" fxLayoutAlign="start center">
+                        <div class="search" fxFlex fxLayout="row" fxLayoutAlign="start center">
+                          <input [(ngModel)]="searchText" type="text" placeholder="Groups" fxFlex>
+                          <!-- <mat-icon class="s-16">Search</mat-icon> -->
+                        </div>
+                      </div>
+                    </mat-toolbar-row>
+                  </mat-toolbar>
+                </div>
+                <div class="sidenav-content" fusePerfectScrollbar style="margin-top: 10px;">
+                  <div *ngFor="let usr of AllQuestionnaireByGroup">
+                    <div [attr.aria-label]="usr.QRGText">
+                      <div class="mx-8 mb-8 mt-0 p-8 leftCard" (click)="loadSelectedMenuApp(usr)"
+                        [style.border-left-color]="selectQuestionnaireGroupID==usr.QRGID?'#efb577':'#cccccc'">
+                        <!-- [style.border-left-color]="selectQuestionnaireGroupID==usr.qrGID?'#efb577':'#cccccc'" -->
+                        <div fxLayout fxLayoutAlign="space-between center">
+                          <div fxFlex><strong>{{usr.QRGText}}</strong></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="(AllQuestionnaireByGroup | filter: searchText).length === 0" class="no-results-message">
+                    <span class="pl-12"> No results..</span>
+                  </div>
+                </div>
+              </div>
+              <div class="borderRight1"></div>
+              <div fxFlex="70" class="side-bar" style="margin-left: 3%;">
+                <div>
+                  <div>
+                    <div><span style="font-weight: bold;font-size: 17px;">Added Questions</span>
+                      <div style="
+                          border-bottom: 3px solid #efb577;
+                          margin-right: 84%;
+                          margin-left: 2%;">
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="margin-top: 10px;">
+                      <div fusePerfectScrollbar>
+                        <div *ngFor="let question of AddedQuestions;let i = index">
+                          <div>
+                            <span>{{i+1}}.</span> <span
+                              style="margin: 0px;padding-left: 20px;font-size: 16px;">{{question.QText}}
+                              ?</span>
+                          </div>
+                          <div fxFlex align="end" style="margin-right: 15%;">
+                            <span style="font-size: 20px;" (click)="RemoveQuestion(question.QID)">
+                              x
+                              <!-- <mat-icon>cancel</mat-icon> -->
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top: 10%;">
+                  <div>
+                    <div><span style="font-weight: bold;font-size: 17px;">Pending Questions</span>
+                      <div style="
+                          border-bottom: 3px solid #efb577;
+                          margin-right: 84%;
+                          margin-left: 2%;">
+                      </div>
+                    </div>
+                  </div>
+                  <div fusePerfectScrollbar>
+                    <div style="margin-top: 10px;" *ngFor="let question of UnaddedQuestions;let i = index" fxLayout>
+                      <!-- <div>
+                        <span style="margin: 0px;padding-left: 20px;">{{question.qText}}</span>
+                      </div> -->
+                      <div>
+                        <mat-checkbox class="example-margin" (change)="onChange(question.QID, $event)"
+                          [value]="question.QID">
+                          {{question.QText}}
+                        </mat-checkbox>
+                      </div>
+                      <!-- <div fxFlex align="end" style="margin-right: 15%;"> (change)="onChange(question.qid)"
+                        <span style="font-size: 20px;">
+                          
+                          <mat-icon>cancel</mat-icon>
+                        </span>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout>
+                  <div fxFlex align="end" style="margin-top: 10%;">
+                    <!-- (click)="AddSelectedQuestions()" -->
+                    <button type="submit" class="SaveBtn1" mat-button style="margin-right: 3%;"
+                      (click)="AddSelectedQuestions()">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-progress-spinner *ngIf="IsProgressBarVisibile" class="progressBarPostion" color="accent" mode="indeterminate">
+    </mat-progress-spinner>
+    <div id="overlay" *ngIf="IsProgressBarVisibile"></div>
+  </div>
+</div>
